@@ -11,6 +11,7 @@ function Connection(socket, connection_list, id)
 	this.angulo = 0;
 	this.x = 0;
 	this.y = 0;
+	this.z = 0;
 	
 	/**
 	 * Avisar o usuário da conexão
@@ -19,6 +20,7 @@ function Connection(socket, connection_list, id)
 	 */
 	this.notify_user_connected = function(connection)
 	{
+		socket.write('07|'+ connection.id);
 	}
 	
 	/**
@@ -27,26 +29,7 @@ function Connection(socket, connection_list, id)
 	 */
 	this.notify_user_disconnected = function(connection)
 	{
-	}
-	
-	this.notify_user_entered = function(connection)
-	{
-		
-	}
-	
-	this.notify_user_exited = function(connection)
-	{
-		
-	}
-	
-	this.notify_message_sent = function(connection)
-	{
-		
-	}
-	
-	this.notify_user_moved = function(connection)
-	{
-		
+		socket.write('08|'+ connection.id);
 	}
 	
 	/**
@@ -67,7 +50,7 @@ function Connection(socket, connection_list, id)
 			for(var i = 0; i < connection_list.length; i++)
 			{
 				if(connection_list[i].current_room == this.current_room)
-					connection_list[i].notify_user_entered(this);
+					connection_list[i].socket.write('01|' + this.id);
 			}
 			break;
 			
@@ -76,7 +59,7 @@ function Connection(socket, connection_list, id)
 			for(var i = 0; i < connection_list.length; i++)
 			{
 				if(connection_list[i].current_room == this.current_room)
-					connection_list[i].notify_user_exited(this);
+					connection_list[i].socket.write("02|" + this.id(this));
 			}
 			this.current_room = 0;
 			break;
@@ -87,7 +70,7 @@ function Connection(socket, connection_list, id)
 			for(var i = 0; i < connection_list.length; i++)
 			{
 				if(connection_list[i].current_room == this.current_room)
-					connection_list[i].notify_message_sent(this);
+					connection_list[i].socket.write("03|" + this.id + "|" + this.last_message);
 			}
 			break;
 			
@@ -111,15 +94,16 @@ function Connection(socket, connection_list, id)
 		
 		// Movimentar
 		case '06':
-			this.x = parseInt(parametros[0]);
-			this.y = parseInt(parametros[1]);
-			this.angulo = parseFloat(parametros[2]);
+			this.x = parseFloat(parametros[0]);
+			this.y = parseFloat(parametros[1]);
+			this.z = parseFloat(parametros[2]);
+			this.angulo = parseFloat(parametros[3]);
 			
 			for(var i = 0; i < connection_list.length; i++)
 			{
 				if(connection_list[i].current_room == this.current_room)
 				{
-					connection_list[i].notify_user_moved(this);
+					connection_list[i].socket.write('06|' + this.id + "|" + this.x + "|"+ this.y + "|"+ this.z + "|"+ this.angulo);
 				}
 			}
 			break;
