@@ -6,6 +6,7 @@ function Server(host, port)
 	var port = port;
 	
 	var connection_list = array();
+	var nextId = 1;
 	
 	var server = net.createServer(function(socket)
 	{
@@ -27,8 +28,8 @@ function Server(host, port)
 					return;
 				}
 			}
-			var connection = new Connection(socket, connection_list);
-			connection_list.push(connection);
+			var connection = new Connection(socket, connection_list, nextId);
+			nextId++;
 			
 			for(var i = 0; i < connection_list.length; i++)
 			{
