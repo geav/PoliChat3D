@@ -1,14 +1,15 @@
 var net = require('net');
+//var Connection = require('./Connection');
 
 function Server(host, port)
 {
-	var host = host;
-	var port = port;
+	this.host = host;
+	this.port = port;
 	
-	var connection_list = array();
-	var nextId = 1;
+	this.connection_list = new Array();
+	this.nextId = 1;
 	
-	var server = net.createServer(function(socket)
+	this.server = net.createServer(function(socket)
 	{
 		socket.on('connect', on_connect);
 		socket.on('data', on_data);
@@ -129,13 +130,13 @@ function Server(host, port)
 		}
 	});
 	
-	function start()
+	this.start = function()
 	{
-		server.listen(host, port);
+		this.server.listen(host, port);
 		console.log('Server starting at address ' + host + ":" + port);
 	}
 	
-	function stop()
+	this.stop = function()
 	{
 		while(connection_list.length > 0)
 		{
