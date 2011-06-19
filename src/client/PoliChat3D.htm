@@ -39,9 +39,22 @@
 			
 			var velX=0;
 			var velZ=0;
+			var loader;
 
 			init();
 			animate();
+			
+			
+			function createScene( geometry, scale ) {
+            var m = new THREE.MeshFaceMaterial();
+			
+				//geometry.computeTangents();
+
+				mesh1 = THREE.SceneUtils.addMesh( scene, geometry, scale, 0, - 50, 0, 0, 0, 0, m );
+
+				//loader.statusDomElement.style.display = "none";
+
+			}
 
 			function init() {
 
@@ -72,6 +85,13 @@
 					materials.push( [ new THREE.MeshBasicMaterial( { color: Math.random() * 0xffffff } ) ] );
 
 				}
+				
+				
+				loader = new THREE.JSONLoader( true );
+				document.body.appendChild( loader.statusDomElement );
+				loader.load( { model: "poli.js", callback: function( geometry ) { createScene( geometry, 100 ) } } );
+				
+				
 
 				cube = new THREE.Mesh( new THREE.Cube( 200, 200, 200, 1, 1, 1, materials ), new THREE.MeshFaceMaterial() );
 				cube.position.y = 0;
