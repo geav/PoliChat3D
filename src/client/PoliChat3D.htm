@@ -19,6 +19,7 @@
 
 		<script type="text/javascript" src="../../libs/RequestAnimationFrame.js"></script>
 		<script type="text/javascript" src="../../libs/Stats.js"></script>
+		<script type="text/javascript" src="Camera.js"></script>		
 
 		<script type="text/javascript">
 
@@ -39,14 +40,19 @@
 			
 			var velX=0;
 			var velZ=0;
+			
+			var VEL_PERSONAGEM = 5;
+			var direcaoPersonagem;
+			
 			var loader;
 
 			init();
 			animate();
 			
 			
-			function createScene( geometry, scale ) {
-            var m = new THREE.MeshFaceMaterial();
+			function createScene( geometry, scale ) 
+			{
+				var m = new THREE.MeshFaceMaterial();
 			
 				//geometry.computeTangents();
 
@@ -56,8 +62,8 @@
 
 			}
 
-			function init() {
-
+			function init() 
+			{
 				container = document.createElement( 'div' );
 				document.body.appendChild( container );
 
@@ -66,13 +72,15 @@
 				info.style.top = '10px';
 				info.style.width = '100%';
 				info.style.textAlign = 'center';
-				info.innerHTML = 'Drag to spin the cube';
+				info.innerHTML = 'PoliChat3D';
 				container.appendChild( info );
 
+				/*
 				camera = new THREE.Camera( 70, window.innerWidth / window.innerHeight, 1, 10000 );
 				camera.position.y = 150;
 				camera.position.z = -500;
 				camera.target.position.y = 150;
+				*/
 
 				scene = new THREE.Scene();
 
@@ -80,21 +88,20 @@
 
 				var materials = [];
 
-				for ( var i = 0; i < 6; i ++ ) {
-
+				for ( var i = 0; i < 6; i ++ ) 
+				{
 					materials.push( [ new THREE.MeshBasicMaterial( { color: Math.random() * 0xffffff } ) ] );
-
 				}
 				
-				
+				/*
 				loader = new THREE.JSONLoader( true );
 				document.body.appendChild( loader.statusDomElement );
 				loader.load( { model: "poli.js", callback: function( geometry ) { createScene( geometry, 100 ) } } );
-				
+				*/
 				
 
-				cube = new THREE.Mesh( new THREE.Cube( 200, 200, 200, 1, 1, 1, materials ), new THREE.MeshFaceMaterial() );
-				cube.position.y = 0;
+				cube = new THREE.Mesh( new THREE.Cube( 100, 100, 200, 1, 1, 1, materials ), new THREE.MeshFaceMaterial() );
+				cube.rotation.y = 0; //90 * ( Math.PI / 180 );
 				cube.overdraw = true;
 				scene.addObject( cube );
 
@@ -107,7 +114,7 @@
 				
 				var cubo2 = new THREE.Mesh( new THREE.Cube( 500, 200, 500, 1, 1, 1, materials ), new THREE.MeshFaceMaterial() );
 				cubo2.position.y = 0;
-				cubo2.position.z = 800;
+				cubo2.position.z = -800;
 				cubo2.overdraw = true;
 				
 				var cubo3 = new THREE.Mesh( new THREE.Cube( 500, 200, 500, 1, 1, 1, materials ), new THREE.MeshFaceMaterial() );
@@ -141,87 +148,41 @@
 				document.addEventListener( 'keydown', onDocumentKeyDown, false );
 				document.addEventListener( 'keyup', onDocumentKeyUp, false );
 				
+				// inicialização da câmera
+				camera = new Camera();
+				
+				// movimento
+				direcaoPersonagem = new THREE.Vector3(0,0,0);
 			}
 
 			
 
-			function onDocumentKeyUp(event) {
+			function onDocumentKeyUp(event) 
+			{
 				if(String.fromCharCode(event.keyCode) == "A")
-				{
-					velZ = 0;
-					velX = 0;
-				}
-				if(String.fromCharCode(event.keyCode) == "D")
-				{
-					velZ = 0;
-					velX = 0;
-				}
-				if(String.fromCharCode(event.keyCode) == "W")
-				{
-					velZ = 0;
-					velX = 0;
-				}
-				if(String.fromCharCode(event.keyCode) == "S")
-				{
-					velZ = 0;
-					velX = 0;
-				}
+					direcaoPersonagem.x = 0;
+				else if(String.fromCharCode(event.keyCode) == "D")
+					direcaoPersonagem.x = 0;
+				else if(String.fromCharCode(event.keyCode) == "W")
+					direcaoPersonagem.z = 0;
+				else if(String.fromCharCode(event.keyCode) == "S")
+					direcaoPersonagem.z = 0;
 			}
-			function onDocumentKeyDown(event) {
-				
-				if(String.fromCharCode(event.keyCode) == "A")
-				{
-					var angulo = cube.rotation.y;
-					var nx = Math.cos(-angulo);
-					var nz = Math.sin(-angulo);
-					
-					velZ = nz * (-10);
-					velX = nx * (-10);
-				/*
-					var angulo = cube.rotation.y;
-					nx = Math.cos(-angulo);
-					nz = Math.sin(-angulo);
-
-					var frente = new Vector3(nx, 0, nz);
-					var direita = frente.crossSelf(new Vector3(0, 1, 0));
-
-					velX = direita.x * 5;
-					velZ = direita.z * 5;
-				*/
-					//velX = 5;
-				}
-				if(String.fromCharCode(event.keyCode) == "D")
-				{
-					var angulo = cube.rotation.y + ( 180 * Math.PI/180);
-					var nx = Math.cos(-angulo);
-					var nz = Math.sin(-angulo);
-					
-					velZ = nz * (-10);
-					velX = nx * (-10);
-					//velX=-10;
-				}
-				if(String.fromCharCode(event.keyCode) == "W")
-				{
-					var angulo = cube.rotation.y + (90 * Math.PI/180);
-					var nx = Math.cos(-angulo);
-					var nz = Math.sin(-angulo);
-					
-					velZ = nz * 10;
-					velX = nx * 10;
-				}
-				if(String.fromCharCode(event.keyCode) == "S")
-				{
-					var angulo = cube.rotation.y + (90 * Math.PI/180);
-					var nx = Math.cos(-angulo);
-					var nz = Math.sin(-angulo);
-					
-					velZ = nz * (-10);
-					velX = nx * (-10);
-				}
-				
-			}
-
 			
+			function onDocumentKeyDown(event)
+			{
+				if(String.fromCharCode(event.keyCode) == "A")
+					direcaoPersonagem.x = -1;
+				else if(String.fromCharCode(event.keyCode) == "D")
+					direcaoPersonagem.x = 1;
+				else if(String.fromCharCode(event.keyCode) == "W")
+					direcaoPersonagem.z = -1;
+				else if(String.fromCharCode(event.keyCode) == "S")
+					direcaoPersonagem.z = 1;
+					
+				direcaoPersonagem.normalize();
+			}
+
 			function onDocumentMouseDown( event ) {
 
 				event.preventDefault();
@@ -277,6 +238,7 @@
 				}
 			}
 
+			/*
 			function atualizarCamera()
 			{
 				var angulo = cube.rotation.y +(90 * Math.PI / 180);
@@ -291,13 +253,34 @@
 				camera.target.position.y = cube.position.y;
 				camera.target.position.z = cube.position.z;
 			}
+			*/
 			
 			function movimento()
 			{
-				cube.position.x-=velX;
-				cube.position.z-=velZ;
+				var direcaoFinal = new THREE.Vector3(0,0,0);
+				// movimentação lateral
 				
-				atualizarCamera();
+				var angulo = cube.rotation.y + (Math.PI/180);
+				var ladoX = Math.cos(-angulo) * direcaoPersonagem.x;
+				var ladoZ = Math.sin(-angulo) * direcaoPersonagem.x;
+
+				direcaoFinal.x += ladoX * VEL_PERSONAGEM;
+				direcaoFinal.z += ladoZ * VEL_PERSONAGEM;
+				//////////////////
+
+				// movimentação frontal
+				angulo = cube.rotation.y - (90 * Math.PI/180);
+				var frenteX = Math.cos(-angulo) * direcaoPersonagem.z;
+				var frenteZ = Math.sin(-angulo) * direcaoPersonagem.z;
+
+				direcaoFinal.x += (frenteX * VEL_PERSONAGEM);
+				direcaoFinal.z += (frenteZ * VEL_PERSONAGEM);
+				
+				cube.position.x += direcaoFinal.x;
+				cube.position.z += direcaoFinal.z;
+				//////////////////////
+				
+				camera.atualizar(cube);
 			}
 			
 			function animate() {
@@ -312,11 +295,37 @@
 			function render() {
 
 				cube.rotation.y += ( targetRotation - cube.rotation.y ) * 0.05;
-				renderer.render( scene, camera );
+				renderer.render( scene, camera.getThreeCam() );
 
 			}
 
-		</script><div><div style="position: absolute; top: 10px; width: 100%; text-align: center; ">Drag to spin the cube</div><canvas width="928" height="508"></canvas><div style="cursor: pointer; width: 80px; opacity: 0.9; z-index: 10001; position: absolute; top: 0px; "><div style="background-color: rgb(8, 8, 24); padding-top: 2px; padding-right: 0px; padding-bottom: 3px; padding-left: 0px; "><div style="font-family: Helvetica, Arial, sans-serif; text-align: left; font-size: 9px; color: rgb(0, 255, 255); margin-top: 0px; margin-right: 0px; margin-bottom: 1px; margin-left: 3px; "><span style="font-weight:bold">58 FPS</span> (55-60)</div><canvas width="74" height="30" style="display: block; margin-left: 3px; "></canvas></div><div style="background-color: rgb(8, 24, 8); padding-top: 2px; padding-right: 0px; padding-bottom: 3px; padding-left: 0px; display: none; "><div style="font-family: Helvetica, Arial, sans-serif; text-align: left; font-size: 9px; color: rgb(0, 255, 0); margin-top: 0px; margin-right: 0px; margin-bottom: 1px; margin-left: 3px; "><span style="font-weight:bold">17 MS</span> (8-65)</div><canvas width="74" height="30" style="display: block; margin-left: 3px; "></canvas></div><div style="background-color: rgb(24, 8, 13); padding-top: 2px; padding-right: 0px; padding-bottom: 3px; padding-left: 0px; display: none; "><div style="font-family: Helvetica, Arial, sans-serif; text-align: left; font-size: 9px; color: rgb(255, 0, 128); margin-top: 0px; margin-right: 0px; margin-bottom: 1px; margin-left: 3px; "><span style="font-weight:bold">MEM</span></div><canvas width="74" height="30" style="display: block; margin-left: 3px; "></canvas></div></div></div>
+		</script>
+		<div>
+			<div style="position: absolute; top: 10px; width: 100%; text-align: center; ">
+			</div>
+			<canvas width="928" height="508"></canvas>
+			<div style="cursor: pointer; width: 80px; opacity: 0.9; z-index: 10001; position: absolute; top: 0px; ">
+				<div style="background-color: rgb(8, 8, 24); padding-top: 2px; padding-right: 0px; padding-bottom: 3px; padding-left: 0px; ">
+					<div style="font-family: Helvetica, Arial, sans-serif; text-align: left; font-size: 9px; color: rgb(0, 255, 255); margin-top: 0px; margin-right: 0px; margin-bottom: 1px; margin-left: 3px; ">
+						<span style="font-weight:bold">58 FPS</span> 
+						(55-60)
+					</div>
+					<canvas width="74" height="30" style="display: block; margin-left: 3px; ">
+					</canvas></div><div style="background-color: rgb(8, 24, 8); padding-top: 2px; padding-right: 0px; padding-bottom: 3px; padding-left: 0px; display: none; ">
+					<div style="font-family: Helvetica, Arial, sans-serif; text-align: left; font-size: 9px; color: rgb(0, 255, 0); margin-top: 0px; margin-right: 0px; margin-bottom: 1px; margin-left: 3px; ">
+						<span style="font-weight:bold">17 MS</span> 
+						(8-65)
+					</div>
+					<canvas width="74" height="30" style="display: block; margin-left: 3px; "></canvas>
+				</div>
+				<div style="background-color: rgb(24, 8, 13); padding-top: 2px; padding-right: 0px; padding-bottom: 3px; padding-left: 0px; display: none; ">
+					<div style="font-family: Helvetica, Arial, sans-serif; text-align: left; font-size: 9px; color: rgb(255, 0, 128); margin-top: 0px; margin-right: 0px; margin-bottom: 1px; margin-left: 3px; ">
+						<span style="font-weight:bold">MEM</span>
+					</div>
+					<canvas width="74" height="30" style="display: block; margin-left: 3px; "></canvas>
+				</div>
+			</div>
+		</div>		
 
 	
 

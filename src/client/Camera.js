@@ -3,13 +3,13 @@
 function Camera()
 {
 	this.threeCam = new THREE.Camera( 70, window.innerWidth / window.innerHeight, 1, 10000 );
-	this.threeCam.position.y = 150;
-	this.threeCam.position.z = -500;
+	this.threeCam.position.y = 250;
+	this.threeCam.position.z = 800;
 	this.threeCam.target.position.y = 150;
 	
 	this.atualizar = function(personagem)
 	{
-		var angulo = personagem.rotation.y +(90 * Math.PI / 180);
+		var angulo = personagem.rotation.y - (90 * Math.PI / 180);
 		var nx = Math.cos(-angulo);
 		var nz = Math.sin(-angulo);
 
