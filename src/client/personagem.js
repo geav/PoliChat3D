@@ -1,50 +1,47 @@
 
-function personagem()
+function Personagem()
 {
-	var cube;
-	var velX=0;
-	var velZ=0;
+	this.cube = 0;
+	this.velX=0;
+	this.velZ=0;
 	
-	this.inicializar = inicializar;
-	this.atualizar = atualizar;
-	this.getVelX = getVelX;
-	this.setVelX = setVelX;
-	this.getVelY = getVelY;
-	this.setVelY = setVelY;
-	
-	
-	function inicializar()
+	this.inicializar = function()
 	{
-		cube = new THREE.Mesh( new THREE.Cube( 200, 200, 200, 1, 1, 1, materials ), new THREE.MeshFaceMaterial() );
-		cube.position.y = 0;
-		cube.overdraw = true;
-		scene.addObject( cube );
+		var materials = [];
+
+		for ( var i = 0; i < 6; i ++ ) {
+			materials.push( [ new THREE.MeshBasicMaterial( { color: 0x444444 } ) ] );
+		}
+		this.cube = new THREE.Mesh( new THREE.Cube( 100, 200, 100, 1, 1, 1, materials ), new THREE.MeshFaceMaterial() );
+		this.cube.position.y = 0;
+		this.cube.overdraw = true;
+	
 	}
 	
-	function atualizar()
+	this.atualizar = function()
 	{
-		cube.position.x-=velX;
-		cube.position.z-=velZ;
+		this.cube.position.x-=this.velX;
+		this.cube.position.z-=this.velZ;
 	}
 	
-	function getCube(){
-		return cube;
+	this.getCube = function(){
+		return this.cube;
 	}
 	
-	function getVelX(){
-		return velX;
+	this.getVelX = function(){
+		return this.velX;
 	}
 	
-	function getVelZ(){
-		return velZ;
+	this.getVelZ = function(){
+		return this.velZ;
 	}
 	
-	function setVelX(_velX){
-		velX = _velX ;
+	 this.setVelX = function(parametro){
+		this.velX = parametro ;
 	}
 	
-	function setVelZ(_velZ){
-		velY = _velZ;
+	this.setVelZ = function(parametro){
+		this.velZ = parametro;
 	}
 	
 	
